@@ -150,6 +150,10 @@ public enum Registry {
         }
     }
 
+    public static void reinitialize(String dbName) {
+        INSTANCE.initedDbs.remove(dbName);
+    }
+    
     private boolean loadStaticMetadata() {
         try {
             Enumeration<URL> urls = Registry.instance().getClass().getClassLoader().getResources("activejdbc_metadata.json");
