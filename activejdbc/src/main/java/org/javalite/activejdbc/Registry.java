@@ -59,6 +59,8 @@ public enum Registry {
     private int staticMetadataStatus = 0;
     private String modelFile = "activejdbc_models.properties";
 
+    public static final Map<String, Set<String>> modelClazz = new HashMap<>();
+
     Registry() {
         statisticsQueue = configuration.collectStatistics()
                 ? new StatisticsQueue(configuration.collectStatisticsOnHold())
@@ -108,14 +110,15 @@ public enum Registry {
     }
 
     synchronized void init(String dbName) {
-
         if (staticMetadataStatus == STATIC_METADATA_LOADED || initedDbs.contains(dbName)) {
             return;
         } else {
             initedDbs.add(dbName);
         }
 
-        if (staticMetadataStatus != STATIC_METADATA_CHECKED && loadStaticMetadata()) return;
+        if (staticMetadataStatus != STATIC_METADATA_CHECKED && loadStaticMetadata()) {
+            return;
+        }
 
         try {
             Connection c = ConnectionsAccess.getConnection(dbName);

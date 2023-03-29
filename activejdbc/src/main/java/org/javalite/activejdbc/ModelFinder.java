@@ -63,6 +63,20 @@ public class ModelFinder {
                 throw new InitException(e);
             }
         }
+        //dynamic model lookup
+        Registry.modelClazz.keySet().forEach(dbName -> {
+            Set<String> _modelNames = Registry.modelClazz.get(dbName);
+            if (_modelNames != null) {
+                for (String modelName : _modelNames) {
+                    LogFilter.log(LOGGER, LogLevel.INFO, "Loading models from: {}", modelName);
+                    Set<String> modelNames = modelMap.computeIfAbsent(dbName, k -> new HashSet<>());
+                    if (!modelNames.add(modelName)) {
+                        LogFilter.log(LOGGER, LogLevel.INFO, "Added new model: {}", modelName);
+                        //throw new InitException(String.format("Model '%s' already exists for database '%s'", modelName, dbName));
+                    }
+                }
+            }
+        });
         return modelMap;
     }
 
